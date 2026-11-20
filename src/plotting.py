@@ -49,3 +49,36 @@ def plot_forecast(
     axes[1].hist(err, bins=60, color="teal", alpha=0.8)
     axes[1].set_title(f"Residuales — {target}"); axes[1].set_xlabel("error")
     fig.tight_layout(); fig.savefig(out_dir / f"forecast_{target}.png", dpi=130); plt.close(fig)
+
+def plot_regimes_2d(
+    X_2d: np.ndarray, labels: np.ndarray, out_dir: Path,
+    title: str = "Regímenes operativos (2D)",
+) -> None:
+    """Scatter 2D coloreado por régimen; ruido = X gris."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    fig, ax = plt.subplots(figsize=(7, 5))
+    uniq = np.unique(labels)
+    cmap = plt.get_cmap("tab10")
+    for i, k in enumerate(uniq):
+        m = labels == k
+        color = "lightgray" if k == -1 else cmap(i % 10)
+        ax.scatter(X_2d[m, 0], X_2d[m, 1], s=6, alpha=0.7,
+                   color=color, label=("ruido" if k == -1 else f"R{k}"))
+    ax.set_title(title); ax.legend(markerscale=2, fontsize=8)
+    fig.tight_layout(); fig.savefig(out_dir / "regimes_2d.png", dpi=130); plt.close(fig)
+
+
+def plot_regime_timeline(
+    index, labels: np.ndarray, out_dir: Path, target_col: str | None = None,
+) -> None:
+    """Timeline: régimen a lo largo del tiempo (+ señal si se pasa)."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    fig, ax = plt.subplots(figsize=(12, 4))
+    ax.step(index, labels, where="post", color="tab:blue", lw=0.8, label="régimen")
+    ax.set_ylabel("régimen"); ax.set_title("Timeline de regímenes")
+    if target_col is not None:
+        ax2 = ax.twinx()
+        ax2.plot(index, target_col, color="black", lw=0.6, alpha=0.5, label="señal")
+        ax2.legend(loc="upper right")
+    ax.legend(loc="upper left")
+    fig.tight_layout(); fig.savefig(out_dir / "regimes_timeline.png", dpi=130); plt.close(fig)
