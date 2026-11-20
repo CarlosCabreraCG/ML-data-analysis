@@ -24,6 +24,22 @@ sensor-analytics train --config configs/anomaly_isoforest.json --save
 # Forecast
 sensor-analytics train --config configs/forecast_lgbm.json --save
 
+# Clustering de regímenes (KMeans)
+sensor-analytics train --config configs/clustering_regimes.json --save
+
+# HDBSCAN
+sensor-analytics train --config configs/clustering_hdbscan.json --save
+
+# Grid-search puntual
+sensor-analytics search --config configs/anomaly_isoforest_search.json
+
+# Usando --search con el subcomando train
+sensor-analytics train --config configs/forecast_lgbm_search.json --search
+
+# Batch: ejecuta TODOS los JSON de una carpeta
+sensor-analytics batch --configs-dir configs/ --save
+
+
 # Reutilizar modelo guardado
 sensor-analytics predict \
   --run-dir outputs/sensor_data_1/forecast_lgbm/run_0001 \
