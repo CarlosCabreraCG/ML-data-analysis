@@ -2,3 +2,9 @@
 data/
 outputs/
 *__init__.py
+configs/
+build/
+.vscode/
+
+sensor_analytics.egg-info/
+*__pycache__/
